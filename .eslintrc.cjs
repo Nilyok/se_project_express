@@ -5,8 +5,13 @@ module.exports = {
     node: true,
   },
 
-  // Add the necessary extensions.
   extends: ["eslint:recommended", "airbnb-base", "prettier"],
+
+  parserOptions: {
+    ecmaVersion: "latest",
+    sourceType: "module",
+  },
+
   overrides: [
     {
       env: { node: true },
@@ -14,16 +19,21 @@ module.exports = {
       parserOptions: { sourceType: "script" },
     },
   ],
-  parserOptions: {
-    ecmaVersion: "latest",
-    sourceType: "module",
+
+  rules: {
+    // Allow console logs
+    "no-console": "off",
+
+    // TripleTen rules
+    "no-underscore-dangle": ["error", { allow: ["_id"] }],
+    "import/extensions": ["error", "ignorePackages", { js: "always" }],
+    "import/no-extraneous-dependencies": [
+      "error",
+      {
+        devDependencies: true,
+        optionalDependencies: false,
+        peerDependencies: false,
+      },
+    ],
   },
-rules: {
-  "no-underscore-dangle": ["error", { allow: ["_id"] }],
-  "import/extensions": ["error", "ignorePackages", { js: "always" }],
-  "import/no-extraneous-dependencies": [
-    "error",
-    { devDependencies: true, optionalDependencies: false, peerDependencies: false }
-  ],
-},
 };
