@@ -19,24 +19,26 @@ You also learned how to apply Airbnb ESLint rules, use Mongoose schemas, and str
 
 ## 🎨 Project Features
 
-✅ REST API Endpoints — users & clothing item management
-✅ MongoDB + Mongoose Models — structured data schemas
-✅ Express Routing — modular and organized
-✅ Centralized Error Handling — validation, not found, and server errors
-✅ Validator.js URL validation
-✅ ESLint (Airbnb Base) + Prettier for clean, consistent code
-✅ Local MongoDB Integration at mongodb://localhost:27017/wtwr_db
+✅ **REST API Endpoints** — users & clothing item management
+✅ **MongoDB + Mongoose Models** — structured data schemas
+✅ **Express Routing — modular** and organized
+✅ **Centralized Error Handling** — validation, not found, and server errors
+✅ **Validator.js** — URL validation
+✅ **ESLint (Airbnb Base)** — Prettier for clean, consistent code
+✅ **Local MongoDB** — Integration at mongodb://localhost:27017/wtwr_db
 
 ---
 
 ## 💡 Key Concepts Practiced
-Concept	Description
-REST API Design	Built structured, resource-based endpoints
-Express.js Controllers	Separated logic into clean controller files
-Mongoose Schemas	Created user & item models with validation
-Error Handling Middleware	Implemented centralized error responses
-Routing Structure	Used separate route files for clarity
-Linting (Airbnb)	Wrote standardized, professional-quality code
+
+| Concept | Description |
+|----------|-------------|
+| **REST API Design** | Design	Built structured, resource-based endpoints |
+| **Express.js** | Controllers	Separated logic into clean controller files |
+| **Mongoose Schemas** | Created user & item models with validation |
+| **Error Handling** | Middleware	Implemented centralized error responses |
+| **Routing Structure** | Used separate route files for clarity |
+| **Linting (Airbnb)** | Wrote standardized, professional-quality code |
 
 ---
 
