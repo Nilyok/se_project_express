@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+// eslint-disable-next-line import/no-extraneous-dependencies
 import validator from "validator";
 
 const clothingItemSchema = new mongoose.Schema(
@@ -12,7 +13,7 @@ const clothingItemSchema = new mongoose.Schema(
     weather: {
       type: String,
       required: true,
-      enum: ["hot", "warm", "cold"], // must match your React app
+      enum: ["hot", "warm", "cold"],
     },
     imageUrl: {
       type: String,
@@ -29,13 +30,10 @@ const clothingItemSchema = new mongoose.Schema(
       ref: "user",
       required: true,
     },
-    likes: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "user",
-        default: [],
-      },
-    ],
+    likes: {
+      type: [{ type: mongoose.Schema.Types.ObjectId, ref: "user" }],
+      default: [],
+    },
     createdAt: {
       type: Date,
       default: Date.now,
