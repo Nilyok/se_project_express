@@ -4,9 +4,12 @@ import jwt from "jsonwebtoken";
 import User from "../models/user.js";
 import {
   BAD_REQUEST,
-  DEFAULT_ERROR,
   UNAUTHORIZED,
+  NOT_FOUND,
+  CONFLICT,
+  DEFAULT_ERROR,
 } from "../utils/errors.js";
+
 import JWT_SECRET from "../utils/config.js";
 
 /* =========================
@@ -35,7 +38,7 @@ export const createUser = (req, res) => {
     )
     .catch((err) => {
       if (err.code === 11000) {
-        return res.status(409).send({
+        return res.status(CONFLICT).send({
           message: "User with this email already exists",
         });
       }
@@ -58,7 +61,14 @@ export const createUser = (req, res) => {
 export const login = (req, res) => {
   const { email, password } = req.body;
 
-  User.findUserByCredentials(email, password)
+  // INPUT VALIDATION
+  if (!email || !password) {
+    return res
+      .status(BAD_REQUEST)
+      .send({ message: "Email and password are required" });
+  }
+
+  return User.findUserByCredentials(email, password)
     .then((user) => {
       const token = jwt.sign(
         { _id: user._id },
@@ -66,13 +76,13 @@ export const login = (req, res) => {
         { expiresIn: "7d" }
       );
 
-      res.send({ token });
+      return res.send({ token });
     })
-    .catch(() => {
+    .catch(() =>
       res
         .status(UNAUTHORIZED)
-        .send({ message: "Incorrect email or password" });
-    });
+        .send({ message: "Incorrect email or password" })
+    );
 };
 
 
@@ -83,7 +93,7 @@ export const getCurrentUser = (req, res) => {
   User.findById(req.user._id)
     .then((user) => {
       if (!user) {
-        return res.status(404).send({ message: "User not found" });
+        return res.status(NOT_FOUND).send({ message: "User not found" });
       }
 
       return res.send({
@@ -94,7 +104,9 @@ export const getCurrentUser = (req, res) => {
       });
     })
     .catch(() =>
-      res.status(500).send({ message: "An error has occurred on the server." })
+      res
+        .status(DEFAULT_ERROR)
+        .send({ message: "An error has occurred on the server." })
     );
 };
 
@@ -114,9 +126,9 @@ export const updateCurrentUser = (req, res) => {
     }
   )
     .then((user) => {
-      if (!user) {
-        return res.status(404).send({ message: "User not found" });
-      }
+    if (!user) {
+      return res.status(NOT_FOUND).send({ message: "User not found" });
+    }
 
       return res.send({
         _id: user._id,
@@ -126,15 +138,15 @@ export const updateCurrentUser = (req, res) => {
       });
     })
     .catch((err) => {
-      if (err.name === "ValidationError") {
-        return res.status(400).send({
-          message: "Invalid data for updating user",
-        });
-      }
-
-      return res.status(500).send({
-        message: "An error has occurred on the server.",
+    if (err.name === "ValidationError") {
+      return res.status(BAD_REQUEST).send({
+        message: "Invalid data for updating user",
       });
+    }
+
+    return res.status(DEFAULT_ERROR).send({
+      message: "An error has occurred on the server.",
+    });
     });
 };
 
@@ -159,9 +171,10 @@ export const getUsers = (req, res) => {
 export const getUserById = (req, res) => {
   User.findById(req.params.userId)
     .then((user) => {
-      if (!user) {
-        return res.status(404).send({ message: "User not found" });
-      }
+    if (!user) {
+      return res.status(NOT_FOUND).send({ message: "User not found" });
+    }
+
 
       return res.send(user);
     })

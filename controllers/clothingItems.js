@@ -1,5 +1,10 @@
 import ClothingItem from "../models/clothingItem.js";
-import { BAD_REQUEST, NOT_FOUND, DEFAULT_ERROR } from "../utils/errors.js";
+import {
+  BAD_REQUEST,
+  NOT_FOUND,
+  DEFAULT_ERROR,
+  FORBIDDEN, // ✅ add
+} from "../utils/errors.js";
 
 // GET all items
 export const getItems = (req, res) => {
@@ -39,7 +44,7 @@ export const deleteItem = (req, res) => {
     .orFail()
     .then((item) => {
       if (item.owner.toString() !== req.user._id) {
-        return res.status(403).send({ message: "Forbidden" });
+        return res.status(FORBIDDEN).send({ message: "Forbidden" });
       }
 
       return item.deleteOne().then(() =>

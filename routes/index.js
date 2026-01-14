@@ -6,17 +6,31 @@ import { login, createUser } from "../controllers/users.js";
 
 const router = express.Router();
 
-// PUBLIC AUTH ROUTES
+/* =========================
+   PUBLIC ROUTES
+========================= */
+
+// Auth
 router.post("/signin", login);
 router.post("/signup", createUser);
 
-// SPRINT 12 + 13 USERS ROUTES (NO AUTH HERE)
-router.use("/", usersRouter);
+// Public items route
+router.get("/items", itemsRouter);
 
-// AUTH MIDDLEWARE (AFTER users)
+/* =========================
+   AUTH MIDDLEWARE
+========================= */
+
 router.use(auth);
 
-// ITEMS ROUTES
+/* =========================
+   PROTECTED ROUTES
+========================= */
+
+// Users (me)
+router.use("/users", usersRouter);
+
+// Protected item actions
 router.use("/items", itemsRouter);
 
 export default router;

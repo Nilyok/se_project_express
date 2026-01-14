@@ -6,19 +6,8 @@ import { NOT_FOUND } from "./utils/errors.js";
 
 const app = express();
 
-// origin requests
 app.use(cors());
 app.use(express.json());
-
-// ✅ TEMPORARY: required ONLY for automated tests
-if (process.env.NODE_ENV === "test") {
-  app.use((req, res, next) => {
-    req.user = {
-      _id: "5d8b8592978f8bd833ca8133",
-    };
-    next();
-  });
-}
 
 // MongoDB
 mongoose
@@ -26,7 +15,7 @@ mongoose
   .then(() => console.log("✅ Connected to MongoDB"))
   .catch((err) => console.error("❌ DB connection error:", err));
 
-// routers
+// routes
 app.use("/", routes);
 
 // 404 handler
