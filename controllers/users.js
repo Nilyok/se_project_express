@@ -137,3 +137,43 @@ export const updateCurrentUser = (req, res) => {
       });
     });
 };
+
+/* =========================
+   Get Users
+========================= */
+
+export const getUsers = (req, res) => {
+  User.find({})
+    .then((users) => res.send(users))
+    .catch(() =>
+      res
+        .status(DEFAULT_ERROR)
+        .send({ message: "An error has occurred on the server." })
+    );
+};
+
+/* =========================
+   Get User ID
+========================= */
+
+export const getUserById = (req, res) => {
+  User.findById(req.params.userId)
+    .then((user) => {
+      if (!user) {
+        return res.status(404).send({ message: "User not found" });
+      }
+
+      return res.send(user);
+    })
+    .catch((err) => {
+      if (err.name === "CastError") {
+        return res.status(BAD_REQUEST).send({
+          message: "Invalid user ID",
+        });
+      }
+
+      return res
+        .status(DEFAULT_ERROR)
+        .send({ message: "An error has occurred on the server." });
+    });
+};
