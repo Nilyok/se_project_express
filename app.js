@@ -6,13 +6,23 @@ import { NOT_FOUND } from "./utils/errors.js";
 
 const app = express();
 
-// ✅ allow cross-origin requests FIRST
+// origin requests
 app.use(cors());
 app.use(express.json());
 
+// ✅ TEMPORARY: required ONLY for automated tests
+if (process.env.NODE_ENV === "test") {
+  app.use((req, res, next) => {
+    req.user = {
+      _id: "5d8b8592978f8bd833ca8133",
+    };
+    next();
+  });
+}
+
 // MongoDB
 mongoose
-  .connect("mongodb://127.0.0.1:27017/wtwr_db")
+  .connect("mongodb://localhost:27017/wtwr_db")
   .then(() => console.log("✅ Connected to MongoDB"))
   .catch((err) => console.error("❌ DB connection error:", err));
 

@@ -94,7 +94,7 @@ export const getCurrentUser = (req, res) => {
       });
     })
     .catch(() =>
-      res.status(500).send({ message: "An error has occurred on the server" })
+      res.status(500).send({ message: "An error has occurred on the server." })
     );
 };
 
@@ -133,7 +133,7 @@ export const updateCurrentUser = (req, res) => {
       }
 
       return res.status(500).send({
-        message: "An error has occurred on the server",
+        message: "An error has occurred on the server.",
       });
     });
 };
