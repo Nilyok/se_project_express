@@ -2,34 +2,45 @@ import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 import validator from "validator";
 
-const userSchema = new mongoose.Schema({
-name: {
-  type: String,
-  required: true,
-  minlength: 2,
-  maxlength: 30,
-},
-email: {
-  type: String,
-  required: true,
-  unique: true,
-  lowercase: true,
-  validate: {
-    validator: validator.isEmail,
-    message: "Invalid email",
+const userSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: true,
+      minlength: 2,
+      maxlength: 30,
+    },
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+      lowercase: true,
+      validate: {
+        validator: validator.isEmail,
+        message: "Invalid email",
+      },
+    },
+    password: {
+      type: String,
+      required: true,
+      select: false,
+    },
+    avatar: {
+      type: String,
+      required: true,
+      validate: {
+        validator: validator.isURL,
+        message: "Invalid avatar URL",
+      },
+    },
   },
-},
-avatar: {
-  type: String,
-  required: true,
-  validate: {
-    validator: validator.isURL,
-    message: "Invalid avatar URL",
-  },
-},
-}, { timestamps: true });
+  { timestamps: true }
+);
 
-userSchema.statics.findUserByCredentials = function findUserByCredentials(email, password) {
+userSchema.statics.findUserByCredentials = function findUserByCredentials(
+  email,
+  password
+) {
   return this.findOne({ email })
     .select("+password")
     .then((user) => {
@@ -41,11 +52,9 @@ userSchema.statics.findUserByCredentials = function findUserByCredentials(email,
         if (!matched) {
           return Promise.reject(new Error("Incorrect email or password"));
         }
-
         return user;
       });
     });
 };
-
 
 export default mongoose.model("user", userSchema);

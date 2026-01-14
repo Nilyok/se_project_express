@@ -2,6 +2,9 @@
 
 ![Node.js](https://img.shields.io/badge/Node.js-339933?logo=node.js&logoColor=white)
 
+🎥 **Demo (API Walkthrough)**  
+👉 https://www.loom.com/share/cedb848c6e6f4595a3b2b40e2e0ab635
+
 > 🧩 Project 13 — TripleTen Software Engineering Program
 
 WTWR Backend is a secure server-side REST API built with Node.js, Express, and MongoDB.
