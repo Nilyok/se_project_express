@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-// eslint-disable-next-line import/no-extraneous-dependencies
 import validator from "validator";
 
 const clothingItemSchema = new mongoose.Schema(
