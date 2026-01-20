@@ -3,11 +3,6 @@ import JWT_SECRET from "../utils/config.js";
 import { UNAUTHORIZED } from "../utils/errors.js";
 
 export default (req, res, next) => {
-  // ✅ REQUIRED FOR GITHUB TESTS
-  if (process.env.NODE_ENV === "test") {
-    return next();
-  }
-
   const { authorization } = req.headers;
 
   if (!authorization || !authorization.startsWith("Bearer ")) {

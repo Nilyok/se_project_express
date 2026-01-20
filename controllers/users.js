@@ -1,4 +1,3 @@
-
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User from "../models/user.js";
@@ -9,7 +8,6 @@ import {
   CONFLICT,
   DEFAULT_ERROR,
 } from "../utils/errors.js";
-
 import JWT_SECRET from "../utils/config.js";
 
 /* =========================
@@ -61,7 +59,6 @@ export const createUser = (req, res) => {
 export const login = (req, res) => {
   const { email, password } = req.body;
 
-  // INPUT VALIDATION
   if (!email || !password) {
     return res
       .status(BAD_REQUEST)
@@ -85,9 +82,8 @@ export const login = (req, res) => {
     );
 };
 
-
 /* =========================
-   Get User
+   GET CURRENT USER
 ========================= */
 export const getCurrentUser = (req, res) => {
   User.findById(req.user._id)
@@ -111,24 +107,20 @@ export const getCurrentUser = (req, res) => {
 };
 
 /* =========================
-   UPDATE User
+   UPDATE CURRENT USER
 ========================= */
-
 export const updateCurrentUser = (req, res) => {
   const { name, avatar } = req.body;
 
   User.findByIdAndUpdate(
     req.user._id,
     { name, avatar },
-    {
-      new: true,
-      runValidators: true
-    }
+    { new: true, runValidators: true }
   )
     .then((user) => {
-    if (!user) {
-      return res.status(NOT_FOUND).send({ message: "User not found" });
-    }
+      if (!user) {
+        return res.status(NOT_FOUND).send({ message: "User not found" });
+      }
 
       return res.send({
         _id: user._id,
@@ -138,55 +130,14 @@ export const updateCurrentUser = (req, res) => {
       });
     })
     .catch((err) => {
-    if (err.name === "ValidationError") {
-      return res.status(BAD_REQUEST).send({
-        message: "Invalid data for updating user",
-      });
-    }
-
-    return res.status(DEFAULT_ERROR).send({
-      message: "An error has occurred on the server.",
-    });
-    });
-};
-
-/* =========================
-   Get Users
-========================= */
-
-export const getUsers = (req, res) => {
-  User.find({})
-    .then((users) => res.send(users))
-    .catch(() =>
-      res
-        .status(DEFAULT_ERROR)
-        .send({ message: "An error has occurred on the server." })
-    );
-};
-
-/* =========================
-   Get User ID
-========================= */
-
-export const getUserById = (req, res) => {
-  User.findById(req.params.userId)
-    .then((user) => {
-    if (!user) {
-      return res.status(NOT_FOUND).send({ message: "User not found" });
-    }
-
-
-      return res.send(user);
-    })
-    .catch((err) => {
-      if (err.name === "CastError") {
+      if (err.name === "ValidationError") {
         return res.status(BAD_REQUEST).send({
-          message: "Invalid user ID",
+          message: "Invalid data for updating user",
         });
       }
 
-      return res
-        .status(DEFAULT_ERROR)
-        .send({ message: "An error has occurred on the server." });
+      return res.status(DEFAULT_ERROR).send({
+        message: "An error has occurred on the server.",
+      });
     });
 };
