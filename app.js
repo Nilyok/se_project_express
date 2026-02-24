@@ -6,6 +6,11 @@ import { NOT_FOUND } from "./utils/errors.js";
 
 const app = express();
 
+app.use((req, res, next) => {
+  console.log("➡️  Request received:", req.method, req.url);
+  next();
+});
+
 app.use(cors());
 app.use(express.json());
 
@@ -14,6 +19,7 @@ mongoose
   .connect("mongodb://localhost:27017/wtwr_db")
   .then(() => console.log("✅ Connected to MongoDB"))
   .catch((err) => console.error("❌ DB connection error:", err));
+
 
 // routes
 app.use("/", routes);

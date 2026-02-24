@@ -99,11 +99,15 @@ export const getCurrentUser = (req, res) => {
         email: user.email,
       });
     })
-    .catch(() =>
-      res
+    .catch((err) => {
+      if (err.name === "CastError") {
+        return res.status(BAD_REQUEST).send({ message: "Invalid user ID" });
+      }
+
+      return res
         .status(DEFAULT_ERROR)
-        .send({ message: "An error has occurred on the server." })
-    );
+        .send({ message: "An error has occurred on the server." });
+    });
 };
 
 /* =========================
@@ -133,6 +137,12 @@ export const updateCurrentUser = (req, res) => {
       if (err.name === "ValidationError") {
         return res.status(BAD_REQUEST).send({
           message: "Invalid data for updating user",
+        });
+      }
+
+      if (err.name === "CastError") {
+        return res.status(BAD_REQUEST).send({
+          message: "Invalid user ID",
         });
       }
 

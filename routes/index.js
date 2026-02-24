@@ -13,7 +13,7 @@ const router = express.Router();
 ========================= */
 router.post("/signup", createUser);
 router.post("/signin", login);
-router.get("/items", getItems); // ✅ public GET items
+router.get("/items", getItems);
 
 /* =========================
    AUTH MIDDLEWARE
