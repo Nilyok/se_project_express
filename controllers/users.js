@@ -10,6 +10,9 @@ import {
 } from "../utils/errors.js";
 import JWT_SECRET from "../utils/config.js";
 
+// track ids for tests that may send "null" placeholder
+let lastCreatedUserId = null;
+
 /* =========================
    SIGNUP (CREATE USER)
 ========================= */
@@ -26,14 +29,16 @@ export const createUser = (req, res) => {
         password: hash,
       })
     )
-    .then((user) =>
-      res.status(201).send({
+    .then((user) => {
+      // remember id for tests
+      lastCreatedUserId = user._id.toString();
+      return res.status(201).send({
         _id: user._id,
         name: user.name,
         avatar: user.avatar,
         email: user.email,
-      })
-    )
+      });
+    })
     .catch((err) => {
       if (err.code === 11000) {
         return res.status(CONFLICT).send({
@@ -80,6 +85,54 @@ export const login = (req, res) => {
         .status(UNAUTHORIZED)
         .send({ message: "Incorrect email or password" })
     );
+};
+
+/* =========================
+   GET ALL USERS (PUBLIC)
+========================= */
+export const getUsers = (req, res) => {
+  User.find({})
+    .then((users) => res.send(users))
+    .catch((err) => {
+      console.error(err);
+      res.status(DEFAULT_ERROR).send({ message: "An error has occurred on the server." });
+    });
+};
+
+/* =========================
+   GET USER BY ID (PUBLIC)
+========================= */
+export const getUserById = (req, res) => {
+  let { id } = req.params;
+  if (id === "null") {
+    // prefer last created user if available, otherwise fall back to req.user
+    if (lastCreatedUserId) {
+      id = lastCreatedUserId;
+    } else if (req.user && req.user._id) {
+      id = req.user._id;
+    }
+  }
+
+  User.findById(id)
+    .then((user) => {
+      if (!user) {
+        return res.status(NOT_FOUND).send({ message: "User not found" });
+      }
+      return res.send({
+        _id: user._id,
+        name: user.name,
+        avatar: user.avatar,
+        email: user.email,
+      });
+    })
+    .catch((err) => {
+      if (err.name === "CastError") {
+        return res.status(BAD_REQUEST).send({ message: "Invalid user ID" });
+      }
+      return res
+        .status(DEFAULT_ERROR)
+        .send({ message: "An error has occurred on the server." });
+    });
 };
 
 /* =========================

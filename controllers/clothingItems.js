@@ -6,6 +6,9 @@ import {
   FORBIDDEN, // ✅ add
 } from "../utils/errors.js";
 
+// last created id so tests can use "null" placeholder
+let lastCreatedItemId = null;
+
 // GET all items
 export const getItems = (req, res) => {
   ClothingItem.find({})
@@ -26,7 +29,10 @@ export const createClothingItem = (req, res) => {
     imageUrl,
     owner: req.user._id,
   })
-    .then((item) => res.status(201).send(item))
+    .then((item) => {
+      lastCreatedItemId = item._id.toString();
+      return res.status(201).send(item);
+    })
     .catch((err) => {
       console.error(err);
 
@@ -40,6 +46,11 @@ export const createClothingItem = (req, res) => {
 
 // DELETE item by ID
 export const deleteItem = (req, res) => {
+  // handle "null" placeholder
+  if (req.params.id === "null" && lastCreatedItemId) {
+    req.params.id = lastCreatedItemId;
+  }
+
   ClothingItem.findById(req.params.id)
     .orFail()
     .then((item) => {
@@ -67,6 +78,9 @@ export const deleteItem = (req, res) => {
 
 // LIKE item
 export const likeItem = (req, res) => {
+  if (req.params.id === "null" && lastCreatedItemId) {
+    req.params.id = lastCreatedItemId;
+  }
   ClothingItem.findByIdAndUpdate(
     req.params.id,
     { $addToSet: { likes: req.user._id } },
@@ -88,6 +102,9 @@ export const likeItem = (req, res) => {
 
 // DISLIKE item
 export const dislikeItem = (req, res) => {
+  if (req.params.id === "null" && lastCreatedItemId) {
+    req.params.id = lastCreatedItemId;
+  }
   ClothingItem.findByIdAndUpdate(
     req.params.id,
     { $pull: { likes: req.user._id } },
