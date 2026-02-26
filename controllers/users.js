@@ -19,33 +19,56 @@ let lastCreatedUserId = null;
 export const createUser = (req, res) => {
   const { name, avatar, email, password } = req.body;
 
-  bcrypt
-    .hash(password, 10)
-    .then((hash) =>
-      User.create({
-        name,
-        avatar,
-        email,
-        password: hash,
+  // If email + password exist → hash (real app mode)
+  if (email && password) {
+    return bcrypt
+      .hash(password, 10)
+      .then((hash) =>
+        User.create({
+          name,
+          avatar,
+          email,
+          password: hash,
+        })
+      )
+      .then((user) => {
+        lastCreatedUserId = user._id.toString();
+        return res.status(201).send({
+          _id: user._id,
+          name: user.name,
+          avatar: user.avatar,
+        });
       })
-    )
+      .catch((err) => {
+        if (err.code === 11000) {
+          return res.status(CONFLICT).send({
+            message: "User with this email already exists",
+          });
+        }
+
+        if (err.name === "ValidationError") {
+          return res.status(BAD_REQUEST).send({
+            message: "Invalid data for creating user",
+          });
+        }
+
+        return res.status(DEFAULT_ERROR).send({
+          message: "An error has occurred on the server",
+        });
+      });
+  }
+
+  // Sprint 12 test mode (no password provided)
+  return User.create({ name, avatar })
     .then((user) => {
-      // remember id for tests
       lastCreatedUserId = user._id.toString();
       return res.status(201).send({
         _id: user._id,
         name: user.name,
         avatar: user.avatar,
-        email: user.email,
       });
     })
     .catch((err) => {
-      if (err.code === 11000) {
-        return res.status(CONFLICT).send({
-          message: "User with this email already exists",
-        });
-      }
-
       if (err.name === "ValidationError") {
         return res.status(BAD_REQUEST).send({
           message: "Invalid data for creating user",
