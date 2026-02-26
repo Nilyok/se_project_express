@@ -1,0 +1,56 @@
+warning: in the working copy of 'routes/index.js', LF will be replaced by CRLF the next time Git touches it
+[1mdiff --git a/routes/index.js b/routes/index.js[m
+[1mindex 878adb5..11823ca 100644[m
+[1m--- a/routes/index.js[m
+[1m+++ b/routes/index.js[m
+[36m@@ -1,8 +1,12 @@[m
+ import express from "express";[m
+ import usersRouter from "./users.js";[m
+ import itemsRouter from "./clothingItems.js";[m
+[31m-[m
+[31m-import { login, createUser, getUsers, getUserById } from "../controllers/users.js";[m
+[32m+[m[32mimport {[m
+[32m+[m[32m  login,[m
+[32m+[m[32m  createUser,[m
+[32m+[m[32m  getUsers,[m
+[32m+[m[32m  getUserById,[m
+[32m+[m[32m} from "../controllers/users.js";[m
+ import { getItems } from "../controllers/clothingItems.js";[m
+ [m
+ const router = express.Router();[m
+[36m@@ -11,24 +15,31 @@[m [mconst router = express.Router();[m
+    PUBLIC ROUTES[m
+ ========================= */[m
+ [m
+[31m-// user creation (tests expect POST /users)[m
+[32m+[m[32m// Create user (tests expect POST /users)[m
+ router.post("/users", createUser);[m
+[32m+[m
+[32m+[m[32m// Optional legacy routes[m
+ router.post("/signup", createUser);[m
+ router.post("/signin", login);[m
+ [m
+[31m-// retrieval routes[m
+[32m+[m[32m// User retrieval[m
+ router.get("/users", getUsers);[m
+ router.get("/users/:id", getUserById);[m
+[32m+[m
+[32m+[m[32m// Items retrieval[m
+ router.get("/items", getItems);[m
+ [m
+ /* =========================[m
+[31m-   IMPORTANT:[m
+    AUTH DISABLED FOR TESTS[m
+ ========================= */[m
+ [m
+[31m-// ❌ DO NOT USE auth during Sprint 12 tests[m
+[32m+[m[32m// Do NOT enable auth for Sprint 12 test environment[m
+ // router.use(auth);[m
+ [m
+[32m+[m[32m/* =========================[m
+[32m+[m[32m   ROUTERS[m
+[32m+[m[32m========================= */[m
+[32m+[m
+ router.use("/users", usersRouter);[m
+ router.use("/items", itemsRouter);[m
+ [m

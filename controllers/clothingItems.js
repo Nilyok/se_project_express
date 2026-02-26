@@ -3,20 +3,18 @@ import {
   BAD_REQUEST,
   NOT_FOUND,
   DEFAULT_ERROR,
-  FORBIDDEN, // ✅ add
+  FORBIDDEN,
 } from "../utils/errors.js";
-
-// last created id so tests can use "null" placeholder
-let lastCreatedItemId = null;
 
 // GET all items
 export const getItems = (req, res) => {
   ClothingItem.find({})
     .then((items) => res.send(items))
-    .catch((err) => {
-      console.error(err);
-      res.status(DEFAULT_ERROR).send({ message: "An error has occurred on the server" });
-    });
+    .catch(() =>
+      res.status(DEFAULT_ERROR).send({
+        message: "An error has occurred on the server",
+      })
+    );
 };
 
 // CREATE item
@@ -29,28 +27,22 @@ export const createClothingItem = (req, res) => {
     imageUrl,
     owner: req.user._id,
   })
-    .then((item) => {
-      lastCreatedItemId = item._id.toString();
-      return res.status(201).send(item);
-    })
+    .then((item) => res.status(201).send(item))
     .catch((err) => {
-      console.error(err);
-
       if (err.name === "ValidationError") {
-        return res.status(BAD_REQUEST).send({ message: "Invalid data for creating item" });
+        return res
+          .status(BAD_REQUEST)
+          .send({ message: "Invalid data for creating item" });
       }
 
-      return res.status(DEFAULT_ERROR).send({ message: "An error has occurred on the server" });
+      return res
+        .status(DEFAULT_ERROR)
+        .send({ message: "An error has occurred on the server" });
     });
 };
 
-// DELETE item by ID
+// DELETE item
 export const deleteItem = (req, res) => {
-  // handle "null" placeholder
-  if (req.params.id === "null" && lastCreatedItemId) {
-    req.params.id = lastCreatedItemId;
-  }
-
   ClothingItem.findById(req.params.id)
     .orFail()
     .then((item) => {
@@ -64,23 +56,23 @@ export const deleteItem = (req, res) => {
     })
     .catch((err) => {
       if (err.name === "CastError") {
-        return res.status(BAD_REQUEST).send({ message: "Invalid item ID format" });
+        return res
+          .status(BAD_REQUEST)
+          .send({ message: "Invalid item ID format" });
       }
       if (err.name === "DocumentNotFoundError") {
-        return res.status(NOT_FOUND).send({ message: "Item not found" });
+        return res
+          .status(NOT_FOUND)
+          .send({ message: "Item not found" });
       }
-      return res.status(DEFAULT_ERROR).send({ message: "An error has occurred on the server" });
+      return res
+        .status(DEFAULT_ERROR)
+        .send({ message: "An error has occurred on the server" });
     });
 };
 
-
-
-
 // LIKE item
 export const likeItem = (req, res) => {
-  if (req.params.id === "null" && lastCreatedItemId) {
-    req.params.id = lastCreatedItemId;
-  }
   ClothingItem.findByIdAndUpdate(
     req.params.id,
     { $addToSet: { likes: req.user._id } },
@@ -90,21 +82,23 @@ export const likeItem = (req, res) => {
     .then((item) => res.send(item))
     .catch((err) => {
       if (err.name === "CastError") {
-        return res.status(BAD_REQUEST).send({ message: "Invalid item ID format" });
+        return res
+          .status(BAD_REQUEST)
+          .send({ message: "Invalid item ID format" });
       }
       if (err.name === "DocumentNotFoundError") {
-        return res.status(NOT_FOUND).send({ message: "Item not found" });
+        return res
+          .status(NOT_FOUND)
+          .send({ message: "Item not found" });
       }
-      return res.status(DEFAULT_ERROR).send({ message: "An error has occurred on the server" });
+      return res
+        .status(DEFAULT_ERROR)
+        .send({ message: "An error has occurred on the server" });
     });
 };
 
-
 // DISLIKE item
 export const dislikeItem = (req, res) => {
-  if (req.params.id === "null" && lastCreatedItemId) {
-    req.params.id = lastCreatedItemId;
-  }
   ClothingItem.findByIdAndUpdate(
     req.params.id,
     { $pull: { likes: req.user._id } },
@@ -114,11 +108,17 @@ export const dislikeItem = (req, res) => {
     .then((item) => res.send(item))
     .catch((err) => {
       if (err.name === "CastError") {
-        return res.status(BAD_REQUEST).send({ message: "Invalid item ID format" });
+        return res
+          .status(BAD_REQUEST)
+          .send({ message: "Invalid item ID format" });
       }
       if (err.name === "DocumentNotFoundError") {
-        return res.status(NOT_FOUND).send({ message: "Item not found" });
+        return res
+          .status(NOT_FOUND)
+          .send({ message: "Item not found" });
       }
-      return res.status(DEFAULT_ERROR).send({ message: "An error has occurred on the server" });
+      return res
+        .status(DEFAULT_ERROR)
+        .send({ message: "An error has occurred on the server" });
     });
 };

@@ -1,8 +1,12 @@
 import express from "express";
 import usersRouter from "./users.js";
 import itemsRouter from "./clothingItems.js";
-
-import { login, createUser, getUsers, getUserById } from "../controllers/users.js";
+import {
+  login,
+  createUser,
+  getUsers,
+  getUserById,
+} from "../controllers/users.js";
 import { getItems } from "../controllers/clothingItems.js";
 
 const router = express.Router();
@@ -11,23 +15,30 @@ const router = express.Router();
    PUBLIC ROUTES
 ========================= */
 
-// user creation (tests expect POST /users)
+// Create user (tests expect POST /users)
 router.post("/users", createUser);
+
+// Optional legacy routes
 router.post("/signup", createUser);
 router.post("/signin", login);
 
-// retrieval routes
+// User retrieval
 router.get("/users", getUsers);
 router.get("/users/:id", getUserById);
+
+// Items retrieval
 router.get("/items", getItems);
 
 /* =========================
-   IMPORTANT:
    AUTH DISABLED FOR TESTS
 ========================= */
 
-// ❌ DO NOT USE auth during Sprint 12 tests
+// Do NOT enable auth for Sprint 12 test environment
 // router.use(auth);
+
+/* =========================
+   ROUTERS
+========================= */
 
 router.use("/users", usersRouter);
 router.use("/items", itemsRouter);
