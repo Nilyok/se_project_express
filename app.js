@@ -29,7 +29,7 @@ app.use("*", (req, res) => {
   res.status(NOT_FOUND).send({ message: "Requested resource not found" });
 });
 
-const { PORT = 3002 } = process.env;
+const { PORT = 3001 } = process.env;
 
 app.listen(PORT, () => {
   console.log(`🚀 Server is listening on port ${PORT}`);
