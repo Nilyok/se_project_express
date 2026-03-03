@@ -19,14 +19,12 @@ router.post("/signin", login);
 /* =========================
    ENABLE AUTH HERE
 ========================= */
-
-router.use(auth); // 🔥 TURN AUTH ON
+router.use("/items", itemsRouter); // public GET
 
 /* =========================
    PROTECTED ROUTES
 ========================= */
-
+router.use(auth); // 🔥 TURN AUTH ON
 router.use("/users", usersRouter);
-router.use("/items", itemsRouter);
 
 export default router;

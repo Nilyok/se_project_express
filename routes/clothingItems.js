@@ -1,5 +1,6 @@
 import express from "express";
 import {
+  getItems,
   createClothingItem,
   deleteItem,
   likeItem,
@@ -8,7 +9,8 @@ import {
 
 const router = express.Router();
 
-// All routes here are protected
+router.get("/", getItems); // PUBLIC
+
 router.post("/", createClothingItem);
 router.delete("/:id", deleteItem);
 router.put("/:id/likes", likeItem);
