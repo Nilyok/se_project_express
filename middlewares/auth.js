@@ -2,12 +2,7 @@ import jwt from "jsonwebtoken";
 import JWT_SECRET from "../utils/config.js";
 import { UNAUTHORIZED } from "../utils/errors.js";
 
-console.log("🔥 AUTH FILE LOADED");
-
 export default (req, res, next) => {
-  console.log("🔥 AUTH MIDDLEWARE EXECUTED");
-  // if a previous middleware already set req.user (e.g. tests inject a default)
-  // skip authentication checks
   if (req.user && req.user._id) {
     return next();
   }

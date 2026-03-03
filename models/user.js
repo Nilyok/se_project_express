@@ -14,20 +14,18 @@ const userSchema = new mongoose.Schema(
     // ✅ OPTIONAL for Sprint 12
     email: {
       type: String,
-      required: false,
-      unique: false,
-      sparse: true,
+      required: true,
+      unique: true,
       lowercase: true,
       validate: {
-        validator: (v) => !v || validator.isEmail(v),
+        validator: (v) => validator.isEmail(v),
         message: "Invalid email",
       },
     },
 
-    // ✅ OPTIONAL for Sprint 12
     password: {
       type: String,
-      required: false,
+      required: true,
       select: false,
     },
 
@@ -35,7 +33,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
       validate: {
-        validator: validator.isURL,
+        validator: (v) => validator.isURL(v),
         message: "Invalid avatar URL",
       },
     },
@@ -43,7 +41,7 @@ const userSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-userSchema.statics.findUserByCredentials = function (email, password) {
+userSchema.statics.findUserByCredentials = function findUserByCredentials(email, password) {
   return this.findOne({ email })
     .select("+password")
     .then((user) => {
