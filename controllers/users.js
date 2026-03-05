@@ -33,11 +33,12 @@ export const createUser = (req, res) => {
       )
       .then((user) => {
         lastCreatedUserId = user._id.toString();
-        return res.status(201).send({
-          _id: user._id,
-          name: user.name,
-          avatar: user.avatar,
-        });
+          return res.status(201).send({
+            _id: user._id,
+            name: user.name,
+            avatar: user.avatar,
+            email: user.email,
+          });
       })
       .catch((err) => {
         if (err.code === 11000) {
@@ -66,6 +67,7 @@ export const createUser = (req, res) => {
         _id: user._id,
         name: user.name,
         avatar: user.avatar,
+        email: user.email,
       });
     })
     .catch((err) => {

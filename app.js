@@ -6,57 +6,33 @@ import { NOT_FOUND } from "./utils/errors.js";
 
 const app = express();
 
-/* -------------------------
-   Request Logger (Optional)
--------------------------- */
+/* Logger */
 app.use((req, res, next) => {
-  console.log("➡️  Request received:", req.method, req.url);
+  console.log("➡️ Request received:", req.method, req.url);
   next();
 });
 
-/* -------------------------
-   Middleware
--------------------------- */
+/* Middleware */
 app.use(cors());
 app.use(express.json());
 
-/* -------------------------
-   ✅ TEMP TEST USER (Sprint 14 Requirement)
-   This is REQUIRED for automated tests.
-   Remove later when implementing JWT auth.
--------------------------- */
-app.use((req, res, next) => {
-  req.user = {
-    _id: "5d8b8592978f8bd833ca8133",
-  };
-  next();
-});
-
-/* -------------------------
-   MongoDB Connection
--------------------------- */
+/* MongoDB */
 mongoose
   .connect("mongodb://localhost:27017/wtwr_db")
   .then(() => console.log("✅ Connected to MongoDB"))
   .catch((err) => console.error("❌ DB connection error:", err));
 
-/* -------------------------
-   Routes
--------------------------- */
+/* Routes */
 app.use("/", routes);
 
-/* -------------------------
-   404 Handler
--------------------------- */
+/* 404 */
 app.use("*", (req, res) => {
   res.status(NOT_FOUND).send({ message: "Requested resource not found" });
 });
 
-/* -------------------------
-   Start Server
--------------------------- */
+/* Server */
 const { PORT = 3001 } = process.env;
 
 app.listen(PORT, () => {
-  console.log(`🚀 Server is listening on port ${PORT}`);
+  console.log(`🚀 Server running on port ${PORT}`);
 });
