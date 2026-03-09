@@ -9,8 +9,7 @@ import {
 
 const router = express.Router();
 
-router.get("/", getItems); // PUBLIC
-
+router.get("/", getItems); 
 router.post("/", createClothingItem);
 router.delete("/:id", deleteItem);
 router.put("/:id/likes", likeItem);
