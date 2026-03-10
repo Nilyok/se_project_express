@@ -47,7 +47,35 @@ export const createUser = (req, res) => {
         lastCreatedUserId = user._id.toString();
         return sendUser(res, user, 201);
       })
+        .catch((err) => {
+          console.error("createUser error:", err);
+
+          if (err.code === 11000) {
+            return res.status(CONFLICT).send({
+              message: "User with this email already exists",
+            });
+          }
+
+          if (err.name === "ValidationError") {
+            return res.status(BAD_REQUEST).send({
+              message: "Invalid data for creating user",
+            });
+          }
+
+          return res.status(DEFAULT_ERROR).send({
+            message: "An error has occurred on the server",
+          });
+        });
+  }
+
+  return User.create({ name, avatar })
+    .then((user) => {
+      lastCreatedUserId = user._id.toString();
+      return sendUser(res, user, 201);
+    })
       .catch((err) => {
+        console.error("createUser error:", err);
+
         if (err.code === 11000) {
           return res.status(CONFLICT).send({
             message: "User with this email already exists",
@@ -64,24 +92,6 @@ export const createUser = (req, res) => {
           message: "An error has occurred on the server",
         });
       });
-  }
-
-  return User.create({ name, avatar })
-    .then((user) => {
-      lastCreatedUserId = user._id.toString();
-      return sendUser(res, user, 201);
-    })
-    .catch((err) => {
-      if (err.name === "ValidationError") {
-        return res.status(BAD_REQUEST).send({
-          message: "Invalid data for creating user",
-        });
-      }
-
-      return res.status(DEFAULT_ERROR).send({
-        message: "An error has occurred on the server",
-      });
-    });
 };
 
 export const login = (req, res) => {

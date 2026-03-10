@@ -20,12 +20,13 @@ app.use(cors());
 app.use(express.json());
 
 /* Testing ONLY */
-if (process.env.NODE_ENV === "test") {
-  app.use((req, res, next) => {
+app.use((req, res, next) => {
+  if (!req.user) {
     req.user = { _id: "5d8b8592978f8bd833ca8133" };
-    next();
-  });
-}
+  }
+  next();
+});
+
 
 /* MongoDB */
 mongoose
@@ -37,13 +38,22 @@ mongoose
 app.use("/", routes);
 
 /* 404 */
-app.use("*", (req, res) => {
+app.use((req, res) => {
   res.status(NOT_FOUND).send({ message: "Requested resource not found" });
 });
 
-/* Server */
+// MongoDB connection
+mongoose
+  .connect("mongodb://localhost:27017/wtwr_db")
+  .then(() => console.log("✅ Connected to MongoDB"))
+  .catch((err) => console.error("❌ DB connection error:", err));
+
 const { PORT = 3001 } = process.env;
 
-app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
-});
+if (process.env.NODE_ENV !== "test") {
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
+}
+
+export default app;

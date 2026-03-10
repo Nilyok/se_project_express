@@ -21,7 +21,13 @@ export const getItems = (req, res) => {
 export const createClothingItem = (req, res) => {
   const { name, weather, imageUrl } = req.body;
 
-  ClothingItem.create({
+  if (!req.user || !req.user._id) {
+    return res.status(DEFAULT_ERROR).send({
+      message: "An error has occurred on the server",
+    });
+  }
+
+  return ClothingItem.create({
     name,
     weather,
     imageUrl,
@@ -30,16 +36,17 @@ export const createClothingItem = (req, res) => {
     .then((item) => res.status(201).send(item))
     .catch((err) => {
       if (err.name === "ValidationError") {
-        return res
-          .status(BAD_REQUEST)
-          .send({ message: "Invalid data for creating item" });
+        return res.status(BAD_REQUEST).send({
+          message: "Invalid data for creating item",
+        });
       }
 
-      return res
-        .status(DEFAULT_ERROR)
-        .send({ message: "An error has occurred on the server" });
+      return res.status(DEFAULT_ERROR).send({
+        message: "An error has occurred on the server",
+      });
     });
 };
+
 
 // DELETE item
 export const deleteItem = (req, res) => {
