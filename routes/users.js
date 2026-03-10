@@ -1,17 +1,22 @@
 import express from "express";
 import {
+  getUsers,
+  getUserById,
   getCurrentUser,
   updateCurrentUser,
 } from "../controllers/users.js";
+import auth from "../middlewares/auth.js";
 
 const router = express.Router();
 
-/* =========================
-   PROTECTED USER ROUTES
-========================= */
+/* PUBLIC USER ROUTES */
+router.get("/", getUsers);
 
-// These require JWT (auth middleware already applied in index.js)
-router.get("/me", getCurrentUser);
-router.patch("/me", updateCurrentUser);
+/* PROTECTED USER ROUTES */
+router.get("/me", auth, getCurrentUser);
+router.patch("/me", auth, updateCurrentUser);
+
+/* PUBLIC ROUTE */
+router.get("/:id", getUserById);
 
 export default router;
