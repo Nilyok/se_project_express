@@ -128,6 +128,7 @@ export const getUsers = (req, res) => {
 /* =========================
    GET USER BY ID (PUBLIC)
 ========================= */
+// eslint-disable-next-line consistent-return
 export const getUserById = (req, res) => {
   let { id } = req.params;
   if (id === "null") {
@@ -144,7 +145,7 @@ export const getUserById = (req, res) => {
     return res.status(BAD_REQUEST).send({ message: "Invalid user ID" });
   }
 
-  User.findById(id)
+  return User.findById(id)
     .then((user) => {
       if (!user) {
         return res.status(NOT_FOUND).send({ message: "User not found" });
