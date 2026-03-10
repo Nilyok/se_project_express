@@ -1,72 +1,278 @@
-# 🚀 WTWR Backend – Project 13
+# 🌤 WTWR — What To Wear?
 
+![React](https://img.shields.io/badge/React-61DAFB?logo=react&logoColor=white)
 ![Node.js](https://img.shields.io/badge/Node.js-339933?logo=node.js&logoColor=white)
+![MongoDB](https://img.shields.io/badge/MongoDB-47A248?logo=mongodb&logoColor=white)
+![Express](https://img.shields.io/badge/Express.js-000000?logo=express&logoColor=white)
 
-🎥 **Demo (API Walkthrough)**  
-👉 https://www.loom.com/share/cedb848c6e6f4595a3b2b40e2e0ab635
+🎓 **TripleTen Software Engineering Program**  
+📦 **WTWR Full-Stack Application — Projects 13, 14, 15**
 
-> 🧩 Project 13 — TripleTen Software Engineering Program
+WTWR (**What To Wear?**) is a full-stack web application that helps users manage clothing items and decide what to wear based on weather conditions.
 
-WTWR Backend is a secure server-side REST API built with Node.js, Express, and MongoDB.
-This sprint extends the previous backend by implementing authentication, authorization, and protected routes using JWT.
+The application includes:
 
----
-
-## 🧠 About the Project
-
-Project 13 focuses on user authentication and access control.
-The backend now supports user registration, login with JSON Web Tokens, protected routes, and ownership-based permissions for clothing items.
-
-The API ensures that:
-
-• Passwords are securely hashed
-• Only authenticated users can modify protected resources
-• Users cannot delete items owned by others
+• A **React frontend**  
+• A **Node.js + Express backend API**  
+• A **MongoDB database**  
+• **JWT authentication and protected routes**  
+• **Cloud deployment with NGINX and PM2**
 
 ---
 
-## 🎨 Project Features
+# 🌐 Live Application
 
-✅ **User Authentication** — Sign up and sign in using email & JWT issued on successful login (expires in 7 days)
-✅ **Authorization Middleware** — Protects all routes except: POST /signup, POST /signin, GET /items
-✅ **REST API Endpoints** Users & clothing item management
-✅ **MongoDB + Mongoose Models** — Structured schemas with validation
-✅ **Ownership-Based Permissions** — Only item owners can delete their items
-✅ **Centralized Error Handling** — Validation, authorization, not found, and server errors
-✅ **ESLint (Airbnb Base) + Prettier** — Clean, consistent, professional code style
-✅ **CORS Configured** — Ready for frontend integration
-✅ **Local MongoDB** — Connected at mongodb://localhost:27017/wtwr_db
+### Frontend
+https://www-magnum-cloud.duckdns.org
 
+### Backend API
+https://api-magnum-cloud.duckdns.org
 
 ---
 
-## 💡 Key Concepts Practiced
+# 🎥 Demo
+
+Backend API Walkthrough
+
+https://www.loom.com/share/cedb848c6e6f4595a3b2b40e2e0ab635
+
+---
+
+# 🧠 Project Overview
+
+This project was developed across **three sprints** in the TripleTen Software Engineering Program.
+
+| Project | Focus | Description |
+|-------|-------|-------------|
+| **Project 13** | Backend | Built REST API with authentication and authorization |
+| **Project 14** | Frontend | Developed React UI with API integration |
+| **Project 15** | Deployment | Deployed application to a cloud server |
+
+Together these components form a **production-style full-stack application**.
+
+---
+
+# 🛠 Tech Stack
+
+## Frontend
+- React
+- Vite
+- JavaScript (ES6+)
+- CSS Modules
+- REST API integration
+
+## Backend
+- Node.js
+- Express.js
+- MongoDB
+- Mongoose
+- JWT Authentication
+- bcrypt password hashing
+
+## Deployment
+- Google Cloud Virtual Machine
+- NGINX reverse proxy
+- PM2 process manager
+- DuckDNS domain
+
+---
+
+# 🔐 Authentication System
+
+Users can:
+
+• Sign up  
+• Log in securely  
+• Receive a **JWT token valid for 7 days**
+
+Protected routes require:
+
+```
+Authorization: Bearer <token>
+```
+
+Authentication protects:
+
+• profile routes  
+• clothing item creation  
+• item deletion  
+
+---
+
+# 👕 Clothing Item Management
+
+Users can manage clothing items including:
+
+• Creating clothing items  
+• Viewing clothing items  
+• Deleting clothing items  
+
+Ownership protection ensures:
+
+✔ Only the **owner of a clothing item** can delete it.
+
+---
+
+# 📦 API Endpoints
+
+## Public Routes
+
+| Method | Endpoint | Description |
+|------|------|-------------|
+POST | `/signup` | Register a new user |
+POST | `/signin` | Login and receive JWT |
+GET | `/items` | Get clothing items |
+
+---
+
+## Protected Routes
+
+Require authentication.
+
+| Method | Endpoint | Description |
+|------|------|-------------|
+GET | `/users/me` | Get current user profile |
+PATCH | `/users/me` | Update user profile |
+POST | `/items` | Create clothing item |
+DELETE | `/items/:id` | Delete clothing item (owner only) |
+
+---
+
+# 🗄 Database
+
+The project uses **MongoDB** with **Mongoose schemas**.
+
+Collections include:
+
+• users  
+• clothingItems  
+
+Local database connection:
+
+```
+mongodb://localhost:27017/wtwr_db
+```
+
+---
+
+# ⚙ Running the Project Locally
+
+## 1️⃣ Clone repositories
+
+Frontend
+
+```
+git clone https://github.com/Nilyok/se_project_react.git
+```
+
+Backend
+
+```
+git clone https://github.com/Nilyok/se_project_express.git
+```
+
+---
+
+## 2️⃣ Install dependencies
+
+Frontend
+
+```
+npm install
+```
+
+Backend
+
+```
+npm install
+```
+
+---
+
+## 3️⃣ Start MongoDB
+
+```
+mongod
+```
+
+---
+
+## 4️⃣ Start backend server
+
+```
+npm run dev
+```
+
+Backend server runs on:
+
+```
+http://localhost:3001
+```
+
+---
+
+## 5️⃣ Start frontend
+
+```
+npm run dev
+```
+
+Frontend runs on:
+
+```
+http://localhost:3000
+```
+
+---
+
+# 🚀 Deployment (Project 15)
+
+The WTWR application is deployed using:
+
+• **Google Cloud Virtual Machine**  
+• **NGINX reverse proxy**  
+• **PM2 process manager**  
+• **DuckDNS domain**
+
+This allows the application to run continuously and be publicly accessible on the internet.
+
+---
+
+# 💡 Key Concepts Practiced
 
 | Concept | Description |
-|----------|-------------|
-| **REST API Design** | Design	Built structured, resource-based endpoints |
-| **Express.js** | Controllers	Separated logic into clean controller files |
-| **Mongoose Schemas** | Created user & item models with validation |
-| **Error Handling** | Middleware	Implemented centralized error responses |
-| **Routing Structure** | Used separate route files for clarity |
-| **Linting (Airbnb)** | Wrote standardized, professional-quality code |
+|------|-------------|
+REST API Design | Structured API architecture |
+Authentication | JWT login system |
+Authorization | Protected routes |
+Database Modeling | MongoDB + Mongoose |
+Frontend Integration | React + API communication |
+Cloud Deployment | VM hosting with NGINX |
+Process Management | PM2 for server reliability |
 
 ---
 
-## ✨ Reflection
+# ✨ Reflection
 
-This project strengthened backend development skills by teaching how to:
-• Implement secure authentication with JWT
-• Protect routes using authorization middleware
-• Enforce ownership and access control
-• Safely store and hide sensitive user dat
-• Structure a scalable Express application
-• Follow professional linting and formatting standards
-• Test secured APIs using Postman
-Completing Project 13 represents a major step toward building production-ready backends with real-world security practices.
+Through this project I learned how to build and deploy a **complete full-stack application**.
+
+Key skills gained include:
+
+• Building secure REST APIs  
+• Implementing JWT authentication  
+• Creating a React frontend with protected routes  
+• Connecting frontend and backend services  
+• Deploying applications to a cloud server  
+• Configuring NGINX and PM2 for production environments  
+
+This project represents a major step toward building **production-ready web applications**.
 
 ---
 
-🧑‍💻 Created by: Chanoknun “Magnum” Nilyok
-📅 TripleTen Software Engineering Program
-📦 Project 13 — WTWR Backend (Authorization & Security)
+# 👨‍💻 Author
+
+Chanoknun **“Magnum”** Nilyok  
+
+TripleTen Software Engineering Program  
+
+Projects **13 • 14 • 15**
