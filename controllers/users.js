@@ -121,7 +121,7 @@ export const getUsers = (req, res) => {
     .then((users) => res.send(users))
     .catch((err) => {
       console.error(err);
-      res.status(DEFAULT_ERROR).send({ message: "An error has occurred on the server." });
+      return res.status(DEFAULT_ERROR).send({ message: "An error has occurred on the server." });
     });
 };
 
