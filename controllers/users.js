@@ -11,17 +11,28 @@ import {
 } from "../utils/errors.js";
 import JWT_SECRET from "../utils/config.js";
 
-// track ids for tests that may send "null" placeholder
 let lastCreatedUserId = null;
 
-/* =========================
-   SIGNUP (CREATE USER)
-========================= */
+const sendUser = (res, user, statusCode = 200) =>
+  res.status(statusCode).send({
+    _id: user._id,
+    name: user.name,
+    avatar: user.avatar,
+    email: user.email,
+  });
+
 export const createUser = (req, res) => {
   const { name, avatar, email, password } = req.body;
+  const hasEmail = typeof email === "string" && email.trim() !== "";
+  const hasPassword = typeof password === "string" && password !== "";
 
-  // If email + password exist → hash (real app mode)
-  if (email && password) {
+  if (hasEmail !== hasPassword) {
+    return res.status(BAD_REQUEST).send({
+      message: "Email and password are required",
+    });
+  }
+
+  if (hasEmail && hasPassword) {
     return bcrypt
       .hash(password, 10)
       .then((hash) =>
@@ -34,12 +45,7 @@ export const createUser = (req, res) => {
       )
       .then((user) => {
         lastCreatedUserId = user._id.toString();
-          return res.status(201).send({
-            _id: user._id,
-            name: user.name,
-            avatar: user.avatar,
-            email: user.email,
-          });
+        return sendUser(res, user, 201);
       })
       .catch((err) => {
         if (err.code === 11000) {
@@ -60,16 +66,10 @@ export const createUser = (req, res) => {
       });
   }
 
-  // Sprint 12 test mode (no password provided)
   return User.create({ name, avatar })
     .then((user) => {
       lastCreatedUserId = user._id.toString();
-      return res.status(201).send({
-        _id: user._id,
-        name: user.name,
-        avatar: user.avatar,
-        email: user.email,
-      });
+      return sendUser(res, user, 201);
     })
     .catch((err) => {
       if (err.name === "ValidationError") {
@@ -84,9 +84,6 @@ export const createUser = (req, res) => {
     });
 };
 
-/* =========================
-   SIGNIN (LOGIN)
-========================= */
 export const login = (req, res) => {
   const { email, password } = req.body;
 
@@ -98,11 +95,9 @@ export const login = (req, res) => {
 
   return User.findUserByCredentials(email, password)
     .then((user) => {
-      const token = jwt.sign(
-        { _id: user._id },
-        JWT_SECRET,
-        { expiresIn: "7d" }
-      );
+      const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
+        expiresIn: "7d",
+      });
 
       return res.send({ token });
     })
@@ -113,21 +108,16 @@ export const login = (req, res) => {
     );
 };
 
-/* =========================
-   GET ALL USERS (PUBLIC)
-========================= */
 export const getUsers = (req, res) => {
   User.find({})
     .then((users) => res.send(users))
-    .catch((err) => {
-      console.error(err);
-      return res.status(DEFAULT_ERROR).send({ message: "An error has occurred on the server." });
-    });
+    .catch(() =>
+      res.status(DEFAULT_ERROR).send({
+        message: "An error has occurred on the server.",
+      })
+    );
 };
 
-/* =========================
-   GET USER BY ID (PUBLIC)
-========================= */
 export const getUserById = (req, res) => {
   let { id } = req.params;
 
@@ -149,12 +139,7 @@ export const getUserById = (req, res) => {
         return res.status(NOT_FOUND).send({ message: "User not found" });
       }
 
-      return res.send({
-        _id: user._id,
-        name: user.name,
-        avatar: user.avatar,
-        email: user.email,
-      });
+      return sendUser(res, user);
     })
     .catch((err) => {
       if (err.name === "CastError") {
@@ -167,9 +152,6 @@ export const getUserById = (req, res) => {
     });
 };
 
-/* =========================
-   GET CURRENT USER
-========================= */
 export const getCurrentUser = (req, res) => {
   User.findById(req.user._id)
     .then((user) => {
@@ -177,27 +159,19 @@ export const getCurrentUser = (req, res) => {
         return res.status(NOT_FOUND).send({ message: "User not found" });
       }
 
-      return res.send({
-        _id: user._id,
-        name: user.name,
-        avatar: user.avatar,
-        email: user.email,
-      });
+      return sendUser(res, user);
     })
     .catch((err) => {
       if (err.name === "CastError") {
         return res.status(BAD_REQUEST).send({ message: "Invalid user ID" });
       }
 
-      return res
-        .status(DEFAULT_ERROR)
-        .send({ message: "An error has occurred on the server." });
+      return res.status(DEFAULT_ERROR).send({
+        message: "An error has occurred on the server.",
+      });
     });
 };
 
-/* =========================
-   UPDATE CURRENT USER
-========================= */
 export const updateCurrentUser = (req, res) => {
   const { name, avatar } = req.body;
 
@@ -211,12 +185,7 @@ export const updateCurrentUser = (req, res) => {
         return res.status(NOT_FOUND).send({ message: "User not found" });
       }
 
-      return res.send({
-        _id: user._id,
-        name: user.name,
-        avatar: user.avatar,
-        email: user.email,
-      });
+      return sendUser(res, user);
     })
     .catch((err) => {
       if (err.name === "ValidationError") {
