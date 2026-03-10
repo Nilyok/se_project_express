@@ -1,5 +1,6 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import mongoose from "mongoose";
 import User from "../models/user.js";
 import {
   BAD_REQUEST,
@@ -136,6 +137,11 @@ export const getUserById = (req, res) => {
     } else if (req.user && req.user._id) {
       id = req.user._id;
     }
+  }
+
+  // validate before querying to ensure invalid ObjectId is caught
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(BAD_REQUEST).send({ message: "Invalid user ID" });
   }
 
   User.findById(id)
