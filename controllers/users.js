@@ -128,11 +128,10 @@ export const getUsers = (req, res) => {
 /* =========================
    GET USER BY ID (PUBLIC)
 ========================= */
-// eslint-disable-next-line consistent-return
 export const getUserById = (req, res) => {
   let { id } = req.params;
+
   if (id === "null") {
-    // prefer last created user if available, otherwise fall back to req.user
     if (lastCreatedUserId) {
       id = lastCreatedUserId;
     } else if (req.user && req.user._id) {
@@ -140,7 +139,6 @@ export const getUserById = (req, res) => {
     }
   }
 
-  // validate before querying to ensure invalid ObjectId is caught
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(BAD_REQUEST).send({ message: "Invalid user ID" });
   }
@@ -150,6 +148,7 @@ export const getUserById = (req, res) => {
       if (!user) {
         return res.status(NOT_FOUND).send({ message: "User not found" });
       }
+
       return res.send({
         _id: user._id,
         name: user.name,
@@ -161,9 +160,10 @@ export const getUserById = (req, res) => {
       if (err.name === "CastError") {
         return res.status(BAD_REQUEST).send({ message: "Invalid user ID" });
       }
-      return res
-        .status(DEFAULT_ERROR)
-        .send({ message: "An error has occurred on the server." });
+
+      return res.status(DEFAULT_ERROR).send({
+        message: "An error has occurred on the server.",
+      });
     });
 };
 
