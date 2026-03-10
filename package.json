@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/Nilyok/se_project_express#readme",
   "dependencies": {
+    "@slack/web-api": "^7.14.1",
     "bcryptjs": "^3.0.3",
     "cors": "^2.8.5",
     "dotenv": "^17.3.1",
