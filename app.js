@@ -20,7 +20,7 @@ app.use(cors());
 app.use(express.json());
 
 /* Testing */
-if (process.env.NODE_ENV !== "production") {
+if (process.env.NODE_ENV === "test") {
   app.use((req, res, next) => {
     req.user = { _id: "5d8b8592978f8bd833ca8133" };
     next();
