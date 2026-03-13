@@ -23,6 +23,13 @@ mongoose
   .then(() => console.log("✅ Connected to MongoDB"))
   .catch((err) => console.error("❌ DB connection error:", err));
 
+// TODO: Remove this crash-test route after the code review is complete.
+app.get("/crash-test", () => {
+  setTimeout(() => {
+    throw new Error("Server will crash now");
+  }, 0);
+});
+
 /* Routes */
 app.use("/", routes);
 
