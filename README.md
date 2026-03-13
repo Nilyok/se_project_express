@@ -20,6 +20,15 @@ The application includes:
 
 ---
 
+## Project Pitch Video
+
+Check out this video where I describe my project and some challenges I faced while building it.
+
+[WTWR Project Pitch](https://www.loom.com/share/f4b4075b788c46f7a7aeb449350e1c9a)
+
+---
+
+
 # 🌐 Live Application
 
 ### Frontend Application  
