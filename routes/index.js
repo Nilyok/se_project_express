@@ -4,12 +4,13 @@ import itemsRouter from "./clothingItems.js";
 import { login, createUser } from "../controllers/users.js";
 import { getItems } from "../controllers/clothingItems.js";
 import auth from "../middlewares/auth.js";
+import { validateSignup, validateSignin } from "../middlewares/validation.js";
 
 const router = express.Router();
 
 /* Public routes */
-router.post("/signup", createUser);
-router.post("/signin", login);
+router.post("/signup", validateSignup, createUser);
+router.post("/signin", validateSignin, login);
 router.get("/items", getItems);
 
 /* Protected routes */

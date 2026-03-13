@@ -7,14 +7,19 @@ import {
   updateCurrentUser,
 } from "../controllers/users.js";
 import auth from "../middlewares/auth.js";
+import {
+  validateSignup,
+  validateUpdateUser,
+  validateUserId,
+} from "../middlewares/validation.js";
 
 const router = express.Router();
 
 router.get("/me", auth, getCurrentUser);
-router.patch("/me", auth, updateCurrentUser);
+router.patch("/me", auth, validateUpdateUser, updateCurrentUser);
 
 router.get("/", getUsers);
-router.post("/", createUser);
-router.get("/:id", getUserById);
+router.post("/", validateSignup, createUser);
+router.get("/:id", validateUserId, getUserById);
 
 export default router;

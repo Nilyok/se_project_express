@@ -2,20 +2,18 @@ import dotenv from "dotenv";
 import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
+import { errors as celebrateErrors } from "celebrate";
 import routes from "./routes/index.js";
-import { NOT_FOUND } from "./utils/errors.js";
+import { NotFoundError } from "./utils/errors.js";
+import { requestLogger, errorLogger } from "./middlewares/logger.js";
+import errorHandler from "./middlewares/errorHandler.js";
 
 dotenv.config();
 
 const app = express();
 
-/* Logger */
-app.use((req, res, next) => {
-  console.log("➡️ Request received:", req.method, req.url);
-  next();
-});
-
 /* Middleware */
+app.use(requestLogger);
 app.use(cors());
 app.use(express.json());
 
@@ -29,9 +27,13 @@ mongoose
 app.use("/", routes);
 
 /* 404 */
-app.use((req, res) => {
-  res.status(NOT_FOUND).send({ message: "Requested resource not found" });
+app.use((_req, _res, next) => {
+  next(new NotFoundError("Requested resource not found"));
 });
+
+app.use(errorLogger);
+app.use(celebrateErrors());
+app.use(errorHandler);
 
 const { PORT = 3001 } = process.env;
 

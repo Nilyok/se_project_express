@@ -6,13 +6,17 @@ import {
   likeItem,
   dislikeItem,
 } from "../controllers/clothingItems.js";
+import {
+  validateCreateItem,
+  validateItemId,
+} from "../middlewares/validation.js";
 
 const router = express.Router();
 
-router.get("/", getItems); 
-router.post("/", createClothingItem);
-router.delete("/:id", deleteItem);
-router.put("/:id/likes", likeItem);
-router.delete("/:id/likes", dislikeItem);
+router.get("/", getItems);
+router.post("/", validateCreateItem, createClothingItem);
+router.delete("/:id", validateItemId, deleteItem);
+router.put("/:id/likes", validateItemId, likeItem);
+router.delete("/:id/likes", validateItemId, dislikeItem);
 
 export default router;

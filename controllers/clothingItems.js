@@ -1,131 +1,99 @@
 import ClothingItem from "../models/clothingItem.js";
 import {
-  BAD_REQUEST,
-  NOT_FOUND,
-  DEFAULT_ERROR,
-  FORBIDDEN,
+  BadRequestError,
+  NotFoundError,
+  ForbiddenError,
+  UnauthorizedError,
 } from "../utils/errors.js";
 
-// GET all items
-export const getItems = (req, res) => {
-  ClothingItem.find({})
-    .then((items) => res.send(items))
-    .catch(() =>
-      res.status(DEFAULT_ERROR).send({
-        message: "An error has occurred on the server",
-      })
-    );
-};
-
-// CREATE item
-export const createClothingItem = (req, res) => {
-  const { name, weather, imageUrl } = req.body;
-
-  if (!req.user || !req.user._id) {
-    return res.status(DEFAULT_ERROR).send({
-      message: "An error has occurred on the server",
-    });
+export const getItems = async (_req, res, next) => {
+  try {
+    const items = await ClothingItem.find({});
+    return res.send(items);
+  } catch (err) {
+    return next(err);
   }
-
-  return ClothingItem.create({
-    name,
-    weather,
-    imageUrl,
-    owner: req.user._id,
-  })
-    .then((item) => res.status(201).send(item))
-    .catch((err) => {
-      if (err.name === "ValidationError") {
-        return res.status(BAD_REQUEST).send({
-          message: "Invalid data for creating item",
-        });
-      }
-
-      return res.status(DEFAULT_ERROR).send({
-        message: "An error has occurred on the server",
-      });
-    });
 };
 
+export const createClothingItem = async (req, res, next) => {
+  try {
+    const { name, weather, imageUrl } = req.body;
 
-// DELETE item
-export const deleteItem = (req, res) => {
-  ClothingItem.findById(req.params.id)
-    .orFail()
-    .then((item) => {
-      if (item.owner.toString() !== req.user._id) {
-        return res.status(FORBIDDEN).send({ message: "Forbidden" });
-      }
+    if (!req.user || !req.user._id) {
+      throw new UnauthorizedError("Authorization required");
+    }
 
-      return item.deleteOne().then(() =>
-        res.send({ message: "Item deleted" })
-      );
-    })
-    .catch((err) => {
-      if (err.name === "CastError") {
-        return res
-          .status(BAD_REQUEST)
-          .send({ message: "Invalid item ID format" });
-      }
-      if (err.name === "DocumentNotFoundError") {
-        return res
-          .status(NOT_FOUND)
-          .send({ message: "Item not found" });
-      }
-      return res
-        .status(DEFAULT_ERROR)
-        .send({ message: "An error has occurred on the server" });
+    const item = await ClothingItem.create({
+      name,
+      weather,
+      imageUrl,
+      owner: req.user._id,
     });
+
+    return res.status(201).send(item);
+  } catch (err) {
+    if (err.name === "ValidationError") {
+      return next(new BadRequestError("Invalid data for creating item"));
+    }
+
+    return next(err);
+  }
 };
 
-// LIKE item
-export const likeItem = (req, res) => {
-  ClothingItem.findByIdAndUpdate(
-    req.params.id,
-    { $addToSet: { likes: req.user._id } },
-    { new: true }
-  )
-    .orFail()
-    .then((item) => res.send(item))
-    .catch((err) => {
-      if (err.name === "CastError") {
-        return res
-          .status(BAD_REQUEST)
-          .send({ message: "Invalid item ID format" });
-      }
-      if (err.name === "DocumentNotFoundError") {
-        return res
-          .status(NOT_FOUND)
-          .send({ message: "Item not found" });
-      }
-      return res
-        .status(DEFAULT_ERROR)
-        .send({ message: "An error has occurred on the server" });
-    });
+export const deleteItem = async (req, res, next) => {
+  try {
+    const item = await ClothingItem.findById(req.params.id).orFail(
+      () => new NotFoundError("Item not found")
+    );
+
+    if (item.owner.toString() !== req.user._id) {
+      throw new ForbiddenError("Forbidden");
+    }
+
+    await item.deleteOne();
+
+    return res.send({ message: "Item deleted" });
+  } catch (err) {
+    if (err.name === "CastError") {
+      return next(new BadRequestError("Invalid item ID format"));
+    }
+
+    return next(err);
+  }
 };
 
-// DISLIKE item
-export const dislikeItem = (req, res) => {
-  ClothingItem.findByIdAndUpdate(
-    req.params.id,
-    { $pull: { likes: req.user._id } },
-    { new: true }
-  )
-    .orFail()
-    .then((item) => res.send(item))
-    .catch((err) => {
-      if (err.name === "CastError") {
-        return res
-          .status(BAD_REQUEST)
-          .send({ message: "Invalid item ID format" });
-      }
-      if (err.name === "DocumentNotFoundError") {
-        return res
-          .status(NOT_FOUND)
-          .send({ message: "Item not found" });
-      }
-      return res
-        .status(DEFAULT_ERROR)
-        .send({ message: "An error has occurred on the server" });
-    });
+export const likeItem = async (req, res, next) => {
+  try {
+    const item = await ClothingItem.findByIdAndUpdate(
+      req.params.id,
+      { $addToSet: { likes: req.user._id } },
+      { new: true }
+    ).orFail(() => new NotFoundError("Item not found"));
+
+    return res.send(item);
+  } catch (err) {
+    if (err.name === "CastError") {
+      return next(new BadRequestError("Invalid item ID format"));
+    }
+
+    return next(err);
+  }
+};
+
+export const dislikeItem = async (req, res, next) => {
+  try {
+    const item = await ClothingItem.findByIdAndUpdate(
+      req.params.id,
+      { $pull: { likes: req.user._id } },
+      { new: true }
+    ).orFail(() => new NotFoundError("Item not found"));
+
+    return res.send(item);
+  } catch (err) {
+    if (err.name === "CastError") {
+      return next(new BadRequestError("Invalid item ID format"));
+    }
+
+    return next(err);
+  }
 };
