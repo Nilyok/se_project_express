@@ -22,9 +22,19 @@ The application includes:
 
 ## Project Pitch Video
 
-Check out this video where I describe my project and some challenges I faced while building it.
+Check out this video where I describe my project and the challenges I faced while building it.
 
-[WTWR Project Pitch](https://www.loom.com/share/f4b4075b788c46f7a7aeb449350e1c9a)
+🎥 Watch the video here:  
+https://www.loom.com/share/f4b4075b788c46f7a7aeb449350e1c9a
+
+<div style="position: relative; padding-bottom: 56.25%; height: 0;">
+  <iframe 
+    src="https://www.loom.com/embed/f4b4075b788c46f7a7aeb449350e1c9a" 
+    frameborder="0" 
+    allowfullscreen 
+    style="position: absolute; top:0; left:0; width:100%; height:100%;">
+  </iframe>
+</div>
 
 ---
 
