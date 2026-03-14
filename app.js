@@ -4,7 +4,7 @@ import mongoose from "mongoose";
 import cors from "cors";
 import { errors as celebrateErrors } from "celebrate";
 import routes from "./routes/index.js";
-import { NotFoundError } from "./utils/errors.js";
+import { NotFoundError } from "./errors/index.js";
 import { requestLogger, errorLogger } from "./middlewares/logger.js";
 import errorHandler from "./middlewares/errorHandler.js";
 

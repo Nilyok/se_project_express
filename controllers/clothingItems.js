@@ -3,8 +3,7 @@ import {
   BadRequestError,
   NotFoundError,
   ForbiddenError,
-  UnauthorizedError,
-} from "../utils/errors.js";
+} from "../errors/index.js";
 
 export const getItems = async (_req, res, next) => {
   try {
@@ -18,10 +17,6 @@ export const getItems = async (_req, res, next) => {
 export const createClothingItem = async (req, res, next) => {
   try {
     const { name, weather, imageUrl } = req.body;
-
-    if (!req.user || !req.user._id) {
-      throw new UnauthorizedError("Authorization required");
-    }
 
     const item = await ClothingItem.create({
       name,

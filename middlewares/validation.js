@@ -12,14 +12,12 @@ const validateUrl = (value, helpers) => {
 const idPattern = /^[0-9a-fA-F]{24}$/;
 
 export const validateSignup = celebrate({
-  [Segments.BODY]: Joi.object()
-    .keys({
-      name: Joi.string().min(2).max(30).required(),
-      avatar: Joi.string().required().custom(validateUrl),
-      email: Joi.string().email(),
-      password: Joi.string().min(6),
-    })
-    .and("email", "password"),
+  [Segments.BODY]: Joi.object().keys({
+    name: Joi.string().min(2).max(30).required(),
+    avatar: Joi.string().required().custom(validateUrl),
+    email: Joi.string().email().required(),
+    password: Joi.string().min(6).required(),
+  }),
 });
 
 export const validateSignin = celebrate({

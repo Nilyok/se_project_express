@@ -7,7 +7,7 @@ import {
   UnauthorizedError,
   NotFoundError,
   ConflictError,
-} from "../utils/errors.js";
+} from "../errors/index.js";
 import JWT_SECRET from "../utils/config.js";
 
 let lastCreatedUserId = null;
@@ -23,21 +23,13 @@ const sendUser = (res, user, statusCode = 200) =>
 export const createUser = async (req, res, next) => {
   try {
     const { name, avatar, email, password } = req.body;
-    const hasEmail = typeof email === "string" && email.trim() !== "";
-    const hasPassword = typeof password === "string" && password !== "";
-
-    if (hasEmail !== hasPassword) {
-      throw new BadRequestError("Email and password are required");
-    }
-
-    const userPayload = { name, avatar };
-
-    if (hasEmail && hasPassword) {
-      userPayload.email = email;
-      userPayload.password = await bcrypt.hash(password, 10);
-    }
-
-    const user = await User.create(userPayload);
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const user = await User.create({
+      name,
+      avatar,
+      email,
+      password: hashedPassword,
+    });
     lastCreatedUserId = user._id.toString();
 
     return sendUser(res, user, 201);

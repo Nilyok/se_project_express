@@ -1,9 +1,11 @@
-import { DEFAULT_ERROR } from "../utils/errors.js";
+import { DEFAULT_ERROR } from "../errors/index.js";
 
 export default (err, _req, res, next) => {
   if (res.headersSent) {
     return next(err);
   }
+
+  console.error(err);
 
   const { statusCode = DEFAULT_ERROR, message } = err;
 

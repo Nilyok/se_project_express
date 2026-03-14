@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import JWT_SECRET from "../utils/config.js";
-import { UnauthorizedError } from "../utils/errors.js";
+import { UnauthorizedError } from "../errors/index.js";
 
 export default (req, _res, next) => {
   if (req.user && req.user._id) {
