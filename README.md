@@ -55,10 +55,6 @@ https://api.magnum-cloud.duckdns.org
 
 ### Backend API  
 🔗 https://api.magnum-cloud.duckdns.org
-
-### Project Pitch Video  
-https://www.loom.com/share/f4b4075b788c46f7a7aeb449350e1c9a
-
 ---
 
 # 🧠 Project Overview
